@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.ClassroomOccupyMapper">
+
+    <select id="getById" resultType="com.campus.entity.ClassroomOccupy">
+        select * from classroom_occupy where occupy_id = #{occupyId}
+    </select>
+
+    <insert id="insert">
+        insert into classroom_occupy(classroom_id, date, start_time, end_time, source)
+        values(#{classroomId}, #{date}, #{startTime}, #{endTime}, #{source})
+    </insert>
+
+    <update id="update">
+        update classroom_occupy
+        <set>
+            <if test="classroomId != null">classroom_id = #{classroomId},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="source != null and source != ''">source = #{source},</if>
+        </set>
+        where occupy_id = #{occupyId}
+    </update>
+
+    <delete id="deleteById">
+        delete from classroom_occupy where occupy_id = #{occupyId}
+    </delete>
+
+    <select id="queryByClassroomId" resultType="com.campus.entity.ClassroomOccupy">
+        select * from classroom_occupy 
+        where classroom_id = #{classroomId}
+        order by date, start_time
+    </select>
+
+    <delete id="deleteByClassroomId">
+        delete from classroom_occupy where classroom_id = #{classroomId}
+    </delete>
+
+</mapper>

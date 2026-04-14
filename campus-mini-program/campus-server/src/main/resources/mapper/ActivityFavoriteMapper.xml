@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.ActivityFavoriteMapper">
+
+    <insert id="insert">
+        insert into activity_favorite(user_id, activity_id, create_time)
+        values(#{userId}, #{activityId}, #{createTime})
+    </insert>
+
+    <delete id="delete">
+        delete from activity_favorite where user_id = #{userId} and activity_id = #{activityId}
+    </delete>
+
+    <select id="getByUserAndActivity" resultType="com.campus.entity.ActivityFavorite">
+        select * from activity_favorite where user_id = #{userId} and activity_id = #{activityId}
+    </select>
+
+    <select id="listByUserId" resultType="com.campus.entity.ActivityFavorite">
+        select * from activity_favorite where user_id = #{userId} order by create_time desc
+    </select>
+
+    <select id="existsByUserAndActivity" resultType="boolean">
+        select count(*) > 0 from activity_favorite where user_id = #{userId} and activity_id = #{activityId}
+    </select>
+
+</mapper>

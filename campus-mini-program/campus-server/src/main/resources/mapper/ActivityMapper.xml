@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.ActivityMapper">
+
+    <select id="list" resultType="com.campus.entity.Activity">
+        select * from activity
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by start_time desc
+    </select>
+
+    <select id="listWithFilters" resultType="com.campus.entity.Activity">
+        select * from activity
+        <where>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="location != null and location != ''">
+                and location like concat('%', #{location}, '%')
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (title like concat('%', #{keyword}, '%') or description like concat('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by start_time asc
+    </select>
+
+    <select id="listHotActivities" resultType="com.campus.entity.Activity">
+        select * from activity
+        where status in ('upcoming', 'ongoing')
+        order by current_participants / ifnull(max_participants, 1) desc
+        limit #{limit}
+    </select>
+
+    <select id="getById" resultType="com.campus.entity.Activity">
+        select * from activity where activity_id = #{activityId}
+    </select>
+
+    <select id="queryAdminList" resultType="com.campus.entity.Activity">
+        select * from activity
+        <where>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by start_time desc
+    </select>
+
+    <insert id="insert">
+        insert into activity(title, type, location, start_time, end_time, organizer, description, contact, max_participants, current_participants, status)
+        values(#{title}, #{type}, #{location}, #{startTime}, #{endTime}, #{organizer}, #{description}, #{contact}, #{maxParticipants}, #{currentParticipants}, #{status})
+    </insert>
+
+    <update id="update">
+        update activity
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="organizer != null">organizer = #{organizer},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="maxParticipants != null">max_participants = #{maxParticipants},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        where activity_id = #{activityId}
+    </update>
+
+    <delete id="deleteById">
+        delete from activity where activity_id = #{activityId}
+    </delete>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from activity
+    </select>
+
+    <select id="countByStatus" resultType="java.lang.Long">
+        select count(*) from activity where status = #{status}
+    </select>
+
+    <select id="avgRegistrationRate" resultType="java.lang.Double">
+        select ifnull(avg(current_participants * 100.0 / max_participants), 0)
+        from activity where max_participants > 0
+    </select>
+
+</mapper>
+
+<!--<mapper namespace="com.campus.mapper.ActivityRegistrationMapper">-->
+
+<!--    <select id="getByUserAndActivity" resultType="com.campus.entity.ActivityRegistration">-->
+<!--        select * from activity_registration where user_id = #{userId} and activity_id = #{activityId}-->
+<!--    </select>-->
+
+<!--    <insert id="insert">-->
+<!--        insert into activity_registration(user_id, activity_id, register_time, status)-->
+<!--        values(#{userId}, #{activityId}, #{registerTime}, #{status})-->
+<!--    </insert>-->
+
+<!--    <select id="getById" resultType="com.campus.entity.ActivityRegistration">-->
+<!--        select * from activity_registration where registration_id = #{registrationId}-->
+<!--    </select>-->
+
+<!--    <update id="update">-->
+<!--        update activity_registration-->
+<!--        <set>-->
+<!--            <if test="status != null">status = #{status},</if>-->
+<!--        </set>-->
+<!--        where registration_id = #{registrationId}-->
+<!--    </update>-->
+
+<!--    <select id="queryByActivityId" resultType="com.campus.entity.ActivityRegistration">-->
+<!--        select r.*, u.nickname as userNickname, u.phone as userPhone-->
+<!--        from activity_registration r-->
+<!--        left join user u on r.user_id = u.user_id-->
+<!--        where r.activity_id = #{activityId}-->
+<!--        order by r.register_time desc-->
+<!--    </select>-->
+
+<!--    <select id="countByActivityId" resultType="java.lang.Long">-->
+<!--        select count(*) from activity_registration where activity_id = #{activityId}-->
+<!--    </select>-->
+
+<!--    <select id="countTotal" resultType="java.lang.Long">-->
+<!--        select count(*) from activity_registration-->
+<!--    </select>-->
+
+<!--</mapper>-->

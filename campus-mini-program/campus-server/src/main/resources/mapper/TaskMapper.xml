@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.TaskMapper">
+
+    <select id="list" resultType="com.campus.entity.Task">
+        select * from task
+        where user_id = #{userId}
+        and is_archived = 0
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="category != null">
+            and category = #{category}
+        </if>
+        order by deadline asc
+    </select>
+
+    <select id="getById" resultType="com.campus.entity.Task">
+        select * from task where task_id = #{taskId} and user_id = #{userId}
+    </select>
+
+    <insert id="insert">
+        insert into task(user_id, title, content, category, priority, deadline, status, create_time)
+        values(#{userId}, #{title}, #{content}, #{category}, #{priority}, #{deadline}, #{status}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update task
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isArchived != null">is_archived = #{isArchived},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+        </set>
+        where task_id = #{taskId} and user_id = #{userId}
+    </update>
+
+    <delete id="delete">
+        delete from task where task_id = #{taskId} and user_id = #{userId}
+    </delete>
+
+</mapper>

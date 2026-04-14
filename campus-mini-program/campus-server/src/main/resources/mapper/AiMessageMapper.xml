@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.AiMessageMapper">
+
+    <select id="listBySessionId" resultType="com.campus.entity.AiMessage">
+        select * from ai_message where session_id = #{sessionId} order by create_time asc
+    </select>
+
+    <insert id="insert">
+        insert into ai_message(session_id, user_id, role, content, create_time) values(#{sessionId}, #{userId}, #{role}, #{content}, #{createTime})
+    </insert>
+
+    <select id="queryBySessionId" resultType="com.campus.entity.AiMessage">
+        select * from ai_message where session_id = #{sessionId} order by create_time asc
+    </select>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from ai_message
+    </select>
+
+    <select id="avgPerSession" resultType="java.lang.Double">
+        select ifnull(avg(msg_count), 0) from (
+            select session_id, count(*) as msg_count from ai_message group by session_id
+        ) t
+    </select>
+
+    <select id="topQuestions" resultType="java.util.Map">
+        select content as question, count(*) as cnt
+        from ai_message where role = 'user'
+        group by content order by cnt desc limit #{limit}
+    </select>
+
+    <select id="questionCountByHour" resultType="java.util.Map">
+        select hour(create_time) as h, count(*) as cnt
+        from ai_message where role = 'user' and date(create_time) = curdate()
+        group by hour(create_time) order by h
+    </select>
+
+</mapper>

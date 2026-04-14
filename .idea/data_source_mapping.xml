@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/ActivityMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/ActivityRegistrationMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/AiChatSessionMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/AiFeedbackMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/AiMessageMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/BuildingMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/ClassroomMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/ClassroomOccupyMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/CourseMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/KnowledgeChunkMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/KnowledgeDocumentMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/NotificationMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/RecommendationMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/UserBehaviorMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/UserMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+    <file url="file://$PROJECT_DIR$/campus-mini-program/campus-server/src/main/resources/mapper/UserProfileMapper.xml" value="49904a06-70e9-4279-b881-579507cf3816" />
+  </component>
+</project>

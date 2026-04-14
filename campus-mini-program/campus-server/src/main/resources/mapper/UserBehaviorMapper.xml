@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.UserBehaviorMapper">
+
+    <select id="getById" resultType="com.campus.entity.UserBehavior">
+        select * from user_behavior where behavior_id = #{behaviorId}
+    </select>
+
+    <select id="listByUserId" resultType="com.campus.entity.UserBehavior">
+        select * from user_behavior where user_id = #{userId}
+    </select>
+
+    <insert id="insert">
+        insert into user_behavior(user_id, behavior_type, target_id, target_type, content, create_time)
+        values(#{userId}, #{behaviorType}, #{targetId}, #{targetType}, #{content}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update user_behavior
+        <set>
+            <if test="behaviorType != null and behaviorType != ''">behavior_type = #{behaviorType},</if>
+            <if test="targetId != null">target_id = #{targetId},</if>
+            <if test="targetType != null and targetType != ''">target_type = #{targetType},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+        </set>
+        where behavior_id = #{behaviorId}
+    </update>
+
+    <delete id="deleteById">
+        delete from user_behavior where behavior_id = #{behaviorId}
+    </delete>
+
+    <select id="countByDateRange" resultType="java.lang.Long">
+        select count(*) from user_behavior where create_time between #{startDate} and #{endDate}
+    </select>
+
+    <select id="statsByType" resultType="java.util.Map">
+        select behavior_type as type, count(*) as cnt
+        from user_behavior where create_time between #{startDate} and #{endDate}
+        group by behavior_type order by cnt desc
+    </select>
+
+    <select id="countActiveUsers" resultType="java.lang.Long">
+        select count(distinct user_id) from user_behavior where create_time between #{startDate} and #{endDate}
+    </select>
+
+    <select id="topFeatures" resultType="java.util.Map">
+        select target_type as feature, count(*) as cnt
+        from user_behavior group by target_type order by cnt desc limit #{limit}
+    </select>
+
+    <select id="countByTargetTypeAndPeriod" resultType="java.lang.Long">
+        select count(*) from user_behavior
+        where target_type = #{targetType} and create_time between #{startDate} and #{endDate}
+    </select>
+
+    <select id="newUserTrend" resultType="java.util.Map">
+        <choose>
+            <when test="period == 'day'">
+                select date(create_time) as date, count(*) as cnt
+                from user_behavior where behavior_type = 'register'
+                and create_time between #{startDate} and #{endDate}
+                group by date(create_time)
+            </when>
+            <otherwise>
+                select date_format(create_time, '%Y-%u') as week, count(*) as cnt
+                from user_behavior where behavior_type = 'register'
+                and create_time between #{startDate} and #{endDate}
+                group by date_format(create_time, '%Y-%u')
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="behaviorTrend" resultType="java.util.Map">
+        <choose>
+            <when test="period == 'day'">
+                select date(create_time) as date, count(*) as cnt
+                from user_behavior where create_time between #{startDate} and #{endDate}
+                group by date(create_time)
+            </when>
+            <otherwise>
+                select date_format(create_time, '%Y-%u') as week, count(*) as cnt
+                from user_behavior where create_time between #{startDate} and #{endDate}
+                group by date_format(create_time, '%Y-%u')
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="loginTrend" resultType="java.util.Map">
+        <choose>
+            <when test="period == 'day'">
+                select date(create_time) as date, count(*) as cnt
+                from user_behavior where behavior_type = 'login'
+                and create_time between #{startDate} and #{endDate}
+                group by date(create_time)
+            </when>
+            <otherwise>
+                select date_format(create_time, '%Y-%u') as week, count(*) as cnt
+                from user_behavior where behavior_type = 'login'
+                and create_time between #{startDate} and #{endDate}
+                group by date_format(create_time, '%Y-%u')
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

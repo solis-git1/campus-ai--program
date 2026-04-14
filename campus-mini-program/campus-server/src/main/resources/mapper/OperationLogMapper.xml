@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.OperationLogMapper">
+
+    <insert id="insert">
+        insert into operation_log(user_id, username, operation, module, description, method, url, ip, create_time)
+        values(#{userId}, #{username}, #{operation}, #{module}, #{description}, #{method}, #{url}, #{ip}, #{createTime})
+    </insert>
+
+    <select id="queryList" resultType="com.campus.entity.OperationLog">
+        select * from operation_log
+        <where>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="module != null and module != ''">and module like concat('%',#{module},'%')</if>
+            <if test="operation != null and operation != ''">and operation = #{operation}</if>
+            <if test="startTime != null and startTime != ''">and create_time >= #{startTime}</if>
+            <if test="endTime != null and endTime != ''">and create_time &lt;= #{endTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from operation_log
+    </select>
+
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.BuildingMapper">
+
+    <select id="getById" resultType="com.campus.entity.Building">
+        select * from building where building_id = #{buildingId}
+    </select>
+
+    <select id="listAll" resultType="com.campus.entity.Building">
+        select * from building order by building_name
+    </select>
+
+    <insert id="insert">
+        insert into building(building_name, campus, floor_count, create_time)
+        values(#{buildingName}, #{campus}, #{floorCount}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update building
+        <set>
+            <if test="buildingName != null and buildingName != ''">building_name = #{buildingName},</if>
+            <if test="campus != null and campus != ''">campus = #{campus},</if>
+            <if test="floorCount != null">floor_count = #{floorCount},</if>
+        </set>
+        where building_id = #{buildingId}
+    </update>
+
+    <delete id="deleteById">
+        delete from building where building_id = #{buildingId}
+    </delete>
+
+</mapper>

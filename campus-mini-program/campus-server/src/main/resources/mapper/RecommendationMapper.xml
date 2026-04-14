@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.RecommendationMapper">
+
+    <select id="getById" resultType="com.campus.entity.Recommendation">
+        select * from recommendation where rec_id = #{recId}
+    </select>
+
+    <select id="listByUserId" resultType="com.campus.entity.Recommendation">
+        select * from recommendation where user_id = #{userId} order by score desc
+    </select>
+
+    <insert id="insert">
+        insert into recommendation(user_id, rec_type, content_id, reason, score, is_clicked, create_time)
+        values(#{userId}, #{recType}, #{contentId}, #{reason}, #{score}, #{isClicked}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update recommendation
+        <set>
+            <if test="recType != null and recType != ''">rec_type = #{recType},</if>
+            <if test="contentId != null">content_id = #{contentId},</if>
+            <if test="reason != null and reason != ''">reason = #{reason},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="isClicked != null">is_clicked = #{isClicked},</if>
+        </set>
+        where rec_id = #{recId}
+    </update>
+
+    <delete id="deleteById">
+        delete from recommendation where rec_id = #{recId}
+    </delete>
+
+    <update id="markClicked">
+        update recommendation set is_clicked = 1 where rec_id = #{recId} and user_id = #{userId}
+    </update>
+
+    <select id="queryAdminList" resultType="com.campus.entity.Recommendation">
+        select r.*, u.nickname as userName from recommendation r
+        left join user u on r.user_id = u.user_id
+        <where>
+            <if test="recType != null and recType != ''">
+                and r.rec_type = #{recType}
+            </if>
+        </where>
+        order by r.create_time desc
+    </select>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from recommendation
+    </select>
+
+    <select id="countClicked" resultType="java.lang.Long">
+        select count(*) from recommendation where is_clicked = 1
+    </select>
+
+    <select id="clickRate" resultType="java.lang.Double">
+        select ifnull(sum(is_clicked) * 100.0 / count(*), 0) from recommendation
+    </select>
+
+    <select id="statsByType" resultType="java.util.Map">
+        select rec_type as type, count(*) as total,
+               sum(is_clicked) as clicked,
+               ifnull(sum(is_clicked) * 100.0 / count(*), 0) as rate
+        from recommendation group by rec_type
+    </select>
+
+</mapper>

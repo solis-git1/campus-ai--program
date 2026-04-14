@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.CourseReminderMapper">
+
+    <select id="getById" resultType="com.campus.entity.CourseReminder">
+        select * from course_reminder where reminder_id = #{reminderId}
+    </select>
+
+    <select id="getByUserAndCourse" resultType="com.campus.entity.CourseReminder">
+        select * from course_reminder where user_id = #{userId} and course_id = #{courseId}
+    </select>
+
+    <select id="listByUserId" resultType="com.campus.entity.CourseReminder">
+        select * from course_reminder where user_id = #{userId}
+    </select>
+
+    <select id="listNeedSend" resultType="com.campus.entity.CourseReminder">
+        select * from course_reminder where remind_time &lt;= now() and send_count &lt; 3
+    </select>
+
+    <insert id="insert">
+        insert into course_reminder(user_id, course_id, remind_time, repeat_type) values(#{userId}, #{courseId}, #{remindTime}, #{repeatType})
+    </insert>
+
+    <update id="update">
+        update course_reminder
+        <set>
+            <if test="remindTime != null">remind_time = #{remindTime},</if>
+            <if test="repeatType != null and repeatType != ''">repeat_type = #{repeatType},</if>
+        </set>
+        where reminder_id = #{reminderId}
+    </update>
+
+    <update id="updateSend">
+        update course_reminder set send_count = send_count +1, last_send_time = now() where reminder_id = #{reminderId}
+    </update>
+
+    <delete id="deleteById">
+        delete from course_reminder where reminder_id = #{reminderId}
+    </delete>
+
+    <delete id="deleteByUserAndCourse">
+        delete from course_reminder where user_id = #{userId} and course_id = #{courseId}
+    </delete>
+
+</mapper>

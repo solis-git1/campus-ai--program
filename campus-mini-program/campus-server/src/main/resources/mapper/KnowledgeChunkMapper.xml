@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.KnowledgeChunkMapper">
+
+    <select id="getById" resultType="com.campus.entity.KnowledgeChunk">
+        select * from knowledge_chunk where chunk_id = #{chunkId}
+    </select>
+
+    <select id="queryByDocId" resultType="com.campus.entity.KnowledgeChunk">
+        select * from knowledge_chunk where doc_id = #{docId} order by chunk_index
+    </select>
+
+    <insert id="insert">
+        insert into knowledge_chunk(doc_id, chunk_index, content, embedding, create_time) values(#{docId}, #{chunkIndex}, #{content}, #{embedding}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update knowledge_chunk
+        <set>
+            <if test="embedding != null">embedding = #{embedding},</if>
+        </set>
+        where chunk_id = #{chunkId}
+    </update>
+
+    <delete id="deleteByDocId">
+        delete from knowledge_chunk where doc_id = #{docId}
+    </delete>
+
+</mapper>

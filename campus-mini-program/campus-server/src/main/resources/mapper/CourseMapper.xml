@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.CourseMapper">
+
+    <select id="listAll" resultType="com.campus.entity.Course">
+        select * from course order by weekday, start_time
+    </select>
+
+    <select id="getById" resultType="com.campus.entity.Course">
+        select * from course where course_id = #{courseId}
+    </select>
+
+    <select id="queryAdminList" resultType="com.campus.entity.Course">
+        select c.*, cl.room_number as classroomName
+        from course c
+        left join classroom cl on c.classroom_id = cl.classroom_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (c.course_name like concat('%',#{keyword},'%')
+                     or c.teacher like concat('%',#{keyword},'%'))
+            </if>
+            <if test="type != null and type != ''">
+                and c.type = #{type}
+            </if>
+            <if test="weekday != null">
+                and c.weekday = #{weekday}
+            </if>
+        </where>
+        order by c.weekday, c.start_time
+    </select>
+
+    <insert id="insert">
+        insert into course(course_name, teacher, weekday, start_time, end_time, classroom_id, type)
+        values(#{courseName}, #{teacher}, #{weekday}, #{startTime}, #{endTime}, #{classroomId}, #{type})
+    </insert>
+
+    <update id="update">
+        update course
+        <set>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="teacher != null">teacher = #{teacher},</if>
+            <if test="weekday != null">weekday = #{weekday},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="classroomId != null">classroom_id = #{classroomId},</if>
+            <if test="type != null">type = #{type},</if>
+        </set>
+        where course_id = #{courseId}
+    </update>
+
+    <delete id="deleteById">
+        delete from course where course_id = #{courseId}
+    </delete>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from course
+    </select>
+
+    <select id="countByType" resultType="java.lang.Long">
+        select count(*) from course where type = #{type}
+    </select>
+
+    <select id="listByUserId" resultType="com.campus.entity.Course">
+        select c.* from course c
+        inner join user_course uc on c.course_id = uc.course_id
+        where uc.user_id = #{userId}
+        order by c.weekday, c.start_time
+    </select>
+
+    <select id="listUserCourse" resultType="com.campus.vo.CourseVO">
+        select c.course_id, c.course_name, c.teacher, cl.room_number as classroomName,
+               c.weekday, c.start_time, c.end_time, c.type, uc.note
+        from course c
+        inner join user_course uc on c.course_id = uc.course_id
+        left join classroom cl on c.classroom_id = cl.classroom_id
+        where uc.user_id = #{userId}
+        order by c.weekday, c.start_time
+    </select>
+
+    <select id="getUserCourseDetail" resultType="com.campus.vo.CourseVO">
+        select c.course_id, c.course_name, c.teacher, cl.room_number as classroomName,
+               c.weekday, c.start_time, c.end_time, c.type, uc.note
+        from course c
+        inner join user_course uc on c.course_id = uc.course_id
+        left join classroom cl on c.classroom_id = cl.classroom_id
+        where uc.user_id = #{userId} and c.course_id = #{courseId}
+    </select>
+
+</mapper>

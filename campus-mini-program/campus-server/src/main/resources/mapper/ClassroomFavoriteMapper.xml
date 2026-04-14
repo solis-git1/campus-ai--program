@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.ClassroomFavoriteMapper">
+
+    <insert id="insert">
+        insert into classroom_favorite(user_id, classroom_id, create_time)
+        values(#{userId}, #{classroomId}, #{createTime})
+    </insert>
+
+    <delete id="delete">
+        delete from classroom_favorite where user_id = #{userId} and classroom_id = #{classroomId}
+    </delete>
+
+    <select id="listByUserId" resultType="com.campus.entity.ClassroomFavorite">
+        select * from classroom_favorite where user_id = #{userId} order by create_time desc
+    </select>
+
+    <select id="existsByUserAndClassroom" resultType="boolean">
+        select count(*) > 0 from classroom_favorite where user_id = #{userId} and classroom_id = #{classroomId}
+    </select>
+
+</mapper>

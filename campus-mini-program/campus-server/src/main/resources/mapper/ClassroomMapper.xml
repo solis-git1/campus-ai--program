@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.ClassroomMapper">
+
+    <select id="listAll" resultType="com.campus.entity.Classroom">
+        select * from classroom
+    </select>
+
+    <select id="listEmptyClassroom" resultType="com.campus.entity.Classroom">
+        select * from classroom
+        where classroom_id not in (
+            select distinct c.classroom_id
+            from course c
+            where c.weekday = #{dayOfWeek}
+            and not (c.end_time &lt;= #{startTime} or c.start_time &gt;= #{endTime})
+        )
+        and classroom_id not in (
+            select distinct co.classroom_id
+            from classroom_occupy co
+            where co.date = #{date}
+            and not (co.end_time &lt;= #{startTime} or co.start_time &gt;= #{endTime})
+        )
+    </select>
+
+    <select id="listEmptyWithFilters" resultType="com.campus.vo.ClassroomVO">
+        select c.classroom_id, c.building_id, b.building_name as buildingName,
+               c.room_number, c.floor, c.capacity, c.has_media as hasMedia, c.status
+        from classroom c
+        left join building b on c.building_id = b.building_id
+        where classroom_id not in (
+            select distinct cr.classroom_id
+            from course cr
+            where cr.weekday = #{dayOfWeek}
+            and not (cr.end_time &lt;= #{startTime} or cr.start_time &gt;= #{endTime})
+        )
+        and classroom_id not in (
+            select distinct co.classroom_id
+            from classroom_occupy co
+            where co.date = #{date}
+            and not (co.end_time &lt;= #{startTime} or co.start_time &gt;= #{endTime})
+        )
+        <if test="buildingId != null">
+            and c.building_id = #{buildingId}
+        </if>
+        <if test="floor != null">
+            and c.floor = #{floor}
+        </if>
+        <if test="minCapacity != null">
+            and c.capacity >= #{minCapacity}
+        </if>
+        <if test="hasMedia != null">
+            and c.has_media = #{hasMedia}
+        </if>
+        order by c.capacity desc
+    </select>
+
+    <select id="getById" resultType="com.campus.entity.Classroom">
+        select * from classroom where classroom_id = #{classroomId}
+    </select>
+
+    <select id="queryAdminList" resultType="com.campus.entity.Classroom">
+        select c.*, b.building_name as buildingName from classroom c
+        left join building b on c.building_id = b.building_id
+        <where>
+            <if test="buildingId != null">
+                and c.building_id = #{buildingId}
+            </if>
+            <if test="status != null and status != ''">
+                and c.status = #{status}
+            </if>
+        </where>
+        order by c.building_id, c.room_number
+    </select>
+
+    <insert id="insert">
+        insert into classroom(building_id, room_number, floor, capacity, has_media, status)
+        values(#{buildingId}, #{roomNumber}, #{floor}, #{capacity}, #{hasMedia}, #{status})
+    </insert>
+
+    <update id="update">
+        update classroom
+        <set>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="floor != null">floor = #{floor},</if>
+            <if test="capacity != null">capacity = #{capacity},</if>
+            <if test="hasMedia != null">has_media = #{hasMedia},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        where classroom_id = #{classroomId}
+    </update>
+
+    <delete id="deleteById">
+        delete from classroom where classroom_id = #{classroomId}
+    </delete>
+
+    <select id="getByRoomNumberAndBuilding" resultType="com.campus.entity.Classroom">
+        select * from classroom where room_number = #{roomNumber} and building_id = #{buildingId} limit 1
+    </select>
+
+    <select id="countCoursesByClassroom" resultType="java.lang.Long">
+        select count(*) from course where classroom_id = #{classroomId}
+    </select>
+
+</mapper>
+
+<!--<mapper namespace="com.campus.mapper.ClassroomOccupyMapper">-->
+
+<!--    <select id="getById" resultType="com.campus.entity.ClassroomOccupy">-->
+<!--        select * from classroom_occupy where occupy_id = #{occupyId}-->
+<!--    </select>-->
+
+<!--    <insert id="insert">-->
+<!--        insert into classroom_occupy(classroom_id, date, start_time, end_time, source)-->
+<!--        values(#{classroomId}, #{date}, #{startTime}, #{endTime}, #{source})-->
+<!--    </insert>-->
+
+<!--    <update id="update">-->
+<!--        update classroom_occupy-->
+<!--        <set>-->
+<!--        </set>-->
+<!--        where occupy_id = #{occupyId}-->
+<!--    </update>-->
+
+<!--    <delete id="deleteById">-->
+<!--        delete from classroom_occupy where occupy_id = #{occupyId}-->
+<!--    </delete>-->
+
+<!--    <select id="queryByClassroomId" resultType="com.campus.entity.ClassroomOccupy">-->
+<!--        select * from classroom_occupy-->
+<!--        where classroom_id = #{classroomId}-->
+<!--        order by date desc-->
+<!--    </select>-->
+
+<!--    <delete id="deleteByClassroomId">-->
+<!--        delete from classroom_occupy where classroom_id = #{classroomId}-->
+<!--    </delete>-->
+
+<!--</mapper>-->

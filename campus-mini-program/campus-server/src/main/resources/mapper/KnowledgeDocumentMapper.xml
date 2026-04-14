@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.KnowledgeDocumentMapper">
+
+    <select id="getById" resultType="com.campus.entity.KnowledgeDocument">
+        select * from knowledge_document where doc_id = #{docId}
+    </select>
+
+    <select id="queryAdminList" resultType="com.campus.entity.KnowledgeDocument">
+        select * from knowledge_document
+        <where>
+            <if test="category != null and category != ''">
+                and category = #{category}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (title like concat('%',#{keyword},'%') or keywords like concat('%',#{keyword},'%'))
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insert">
+        insert into knowledge_document(title, content, source, file_url, keywords, category, view_count, like_count, create_time)
+        values(#{title}, #{content}, #{source}, #{fileUrl}, #{keywords}, #{category}, #{viewCount}, #{likeCount}, #{createTime})
+    </insert>
+
+    <update id="update">
+        update knowledge_document
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="fileUrl != null">file_url = #{fileUrl},</if>
+            <if test="keywords != null">keywords = #{keywords},</if>
+            <if test="category != null">category = #{category},</if>
+        </set>
+        where doc_id = #{docId}
+    </update>
+
+    <delete id="deleteById">
+        delete from knowledge_document where doc_id = #{docId}
+    </delete>
+
+</mapper>

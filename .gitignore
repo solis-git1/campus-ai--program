@@ -1,0 +1,4 @@
+# Project exclude paths
+/campus-mini-program/campus-common/target/
+/campus-mini-program/campus-pojo/target/
+/campus-mini-program/campus-server/target/

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.AiFeedbackMapper">
+
+    <insert id="insert">
+        insert into ai_feedback(message_id, user_id, rating, comment, create_time) values(#{messageId}, #{userId}, #{rating}, #{comment}, #{createTime})
+    </insert>
+
+    <select id="getById" resultType="com.campus.entity.AiFeedback">
+        select * from ai_feedback where feedback_id = #{feedbackId}
+    </select>
+
+    <select id="queryAdminList" resultType="com.campus.entity.AiFeedback">
+        select f.*, u.nickname as userName from ai_feedback f
+        left join user u on f.user_id = u.user_id
+        order by f.create_time desc
+    </select>
+
+    <update id="update">
+        update ai_feedback
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="reply != null">reply = #{reply},</if>
+            <if test="rating != null">rating = #{rating},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            update_time = now(),
+        </set>
+        where feedback_id = #{feedbackId}
+    </update>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(*) from ai_feedback
+    </select>
+
+</mapper>
