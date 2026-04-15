@@ -40,3 +40,20 @@ server:
   port: 8080
   servlet:
     context-path: /api
+
+
+
+  # 在application.yml中添加以下配置：
+
+  # JWT配置
+jwt:
+  secret: "3sK9$pR2!zQ7*bN5&dF8@gH1^jL6#kM0"  # 需要设置强密码
+  expiration: 86400000  # 24小时
+  issuer: "campus-mini-program"
+
+  # 跨域配置
+cors:
+  allowed-origins: "https://servicewechat.com,http://localhost:8080"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
