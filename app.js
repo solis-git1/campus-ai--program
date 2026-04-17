@@ -2,34 +2,20 @@ App({
   globalData: {
     userInfo: null,
     token: '',
-    baseUrl: 'https://api.campus.example.com' // 替换为实际后端地址
+    baseUrl: 'http://localhost:8080/api' // 改成你的后端地址
   },
 
   onLaunch() {
-    // 检查登录状态
     const token = wx.getStorageSync('token')
+    const userInfo = wx.getStorageSync('userInfo')
     if (token) {
       this.globalData.token = token
-      this.getUserInfo()
+      this.globalData.userInfo = userInfo
     }
   },
 
-  getUserInfo() {
-    wx.request({
-      url: `${this.globalData.baseUrl}/user/user/info`,
-      method: 'GET',
-      header: {
-        'Authorization': `Bearer ${this.globalData.token}`
-      },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.globalData.userInfo = res.data.data
-        }
-      }
-    })
-  },
-
-  login(code) {
+  // 微信登录（调用真实后端）
+  wxLogin(code) {
     return new Promise((resolve, reject) => {
       wx.request({
         url: `${this.globalData.baseUrl}/user/user/login`,
@@ -37,10 +23,16 @@ App({
         data: { code },
         success: (res) => {
           if (res.data.code === 200) {
-            this.globalData.token = res.data.data.token
-            this.globalData.userInfo = res.data.data
-            wx.setStorageSync('token', res.data.data.token)
-            resolve(res.data.data)
+            const data = res.data.data
+            this.globalData.token = data.token
+            this.globalData.userInfo = {
+              userId: data.userId,
+              nickname: data.nickname,
+              avatar: data.avatar
+            }
+            wx.setStorageSync('token', data.token)
+            wx.setStorageSync('userInfo', this.globalData.userInfo)
+            resolve(data)
           } else {
             reject(res.data.message)
           }
@@ -54,6 +46,7 @@ App({
     this.globalData.token = ''
     this.globalData.userInfo = null
     wx.removeStorageSync('token')
+    wx.removeStorageSync('userInfo')
     wx.reLaunch({ url: '/pages/login/login' })
   }
 })

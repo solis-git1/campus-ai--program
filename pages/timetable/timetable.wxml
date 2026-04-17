@@ -1,2 +1,74 @@
-<!--pages/timetable/timetable.wxml-->
-<text>pages/timetable/timetable.wxml</text>
+<view class="container">
+  <view class="view-switch">
+    <view class="switch-item {{viewType === 'week' ? 'active' : ''}}" bindtap="switchView" data-type="week">周视图</view>
+    <view class="switch-item {{viewType === 'day' ? 'active' : ''}}" bindtap="switchView" data-type="day">日视图</view>
+  </view>
+
+  <view class="week-selector flex-between">
+    <view class="arrow" bindtap="prevWeek">〈</view>
+    <text class="week-text">第{{currentWeek}}周</text>
+    <view class="arrow" bindtap="nextWeek">〉</view>
+  </view>
+
+  <view class="week-view" wx:if="{{viewType === 'week'}}">
+    <view class="week-header">
+      <view class="time-col"></view>
+      <view wx:for="{{weekDays}}" wx:key="index" class="day-col">
+        <text class="day">{{item.day}}</text>
+        <text class="date">{{item.date}}</text>
+      </view>
+    </view>
+
+    <scroll-view scroll-y class="course-grid" style="height: 1000rpx;">
+      <view wx:for="{{timeSlots}}" wx:key="index" class="grid-row">
+        <view class="time-col">{{item.time}}</view>
+        <view wx:for="{{weekDays}}" wx:key="idx" class="course-cell">
+          <view wx:for="{{courses}}" wx:key="courseId" wx:if="{{item.weekday === idx + 1 && item.startTime === course.startTime}}">
+            <view class="course-card" bindtap="showCourseDetail" data-course="{{course}}">
+              <text class="course-name">{{course.courseName}}</text>
+              <text class="course-location">{{course.classroomName}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="day-view" wx:if="{{viewType === 'day'}}">
+    <view class="day-header flex-between">
+      <text>{{currentDate}} {{currentWeekday}}</text>
+      <text class="sync-btn" bindtap="syncTimetable">🔄 同步</text>
+    </view>
+
+    <scroll-view scroll-y class="day-courses" style="height: 1000rpx;">
+      <view wx:for="{{dayCourses}}" wx:key="courseId" class="day-course-card">
+        <view class="course-time">{{item.startTime}} - {{item.endTime}}</view>
+        <view class="course-info">
+          <text class="course-name">{{item.courseName}}</text>
+          <text class="course-location">{{item.classroomName}}</text>
+          <text class="course-teacher">{{item.teacher}}</text>
+        </view>
+        <view class="reminder-btn" bindtap="setReminder" data-course="{{item}}">⏰</view>
+      </view>
+      <view wx:if="{{dayCourses.length === 0}}" class="empty-tip">今天没有课程安排～</view>
+    </scroll-view>
+  </view>
+</view>
+
+<view class="modal {{showModal ? 'show' : ''}}" bindtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header flex-between">
+      <text>{{selectedCourse.courseName}}</text>
+      <text class="close" bindtap="hideModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <view class="info-row">教师：{{selectedCourse.teacher}}</view>
+      <view class="info-row">教室：{{selectedCourse.classroomName}}</view>
+      <view class="info-row">时间：{{selectedCourse.startTime}} - {{selectedCourse.endTime}}</view>
+      <view class="info-row">类型：{{selectedCourse.type}}</view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn-delete" bindtap="removeCourse">删除课程</button>
+    </view>
+  </view>
+</view>

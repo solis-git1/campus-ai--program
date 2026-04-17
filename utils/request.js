@@ -7,8 +7,10 @@ const request = (options) => {
       ...options.header
     }
     
-    if (app.globalData.token) {
-      header['Authorization'] = `Bearer ${app.globalData.token}`
+    // 从 app.globalData 获取 token
+    const token = app.globalData?.token || wx.getStorageSync('token')
+    if (token) {
+      header['Authorization'] = `Bearer ${token}`
     }
     
     wx.request({
@@ -20,14 +22,19 @@ const request = (options) => {
         if (res.data.code === 200) {
           resolve(res.data.data)
         } else if (res.data.code === 401) {
-          // token过期，重新登录
-          app.logout()
+          // token过期，清除登录状态
+          wx.removeStorageSync('token')
+          wx.removeStorageSync('userInfo')
+          wx.reLaunch({ url: '/pages/login/login' })
           reject('登录已过期，请重新登录')
         } else {
           reject(res.data.message || '请求失败')
         }
       },
-      fail: reject
+      fail: (err) => {
+        console.error('请求失败:', err)
+        reject('网络错误，请稍后重试')
+      }
     })
   })
 }

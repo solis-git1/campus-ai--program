@@ -1,66 +1,76 @@
-// pages/activity-detail/activity-detail.js
+const { get, post } = require('../../utils/request')
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    activityId: null,
+    activity: null,
+    isFavorite: false,
+    isRegistered: false
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad(options) {
-
+    this.setData({ activityId: options.id })
+    this.loadActivityDetail()
+    this.checkFavorite()
+    this.checkRegistration()
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+  loadActivityDetail() {
+    get(`/user/activity/${this.data.activityId}`).then(data => {
+      this.setData({ activity: data })
+    }).catch(() => {
+      wx.showToast({ title: '加载失败', icon: 'none' })
+    })
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
+  checkFavorite() {
+    // 如果需要检查收藏状态，调用对应接口
+    get('/user/activity/favorite/{activityId}').then(data => {
+      this.setData({ isFavorite: data.isFavorite })
+    })
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  checkRegistration() {
+    // 如果需要检查报名状态，调用对应接口
+     get('/user/activity/register/{activityId}').then(data => {
+      this.setData({ isRegistered: data.isRegistered })
+     })
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
+  toggleFavorite() {
+    if (this.data.isFavorite) {
+      this.setData({ isFavorite: false })
+      wx.showToast({ title: '已取消收藏', icon: 'none' })
+    } else {
+      post(`/user/activity/favorite/{activityId}/${this.data.activityId}`).then(() => {
+        this.setData({ isFavorite: true })
+        wx.showToast({ title: '收藏成功', icon: 'success' })
+      }).catch(() => {
+        wx.showToast({ title: '操作失败', icon: 'none' })
+      })
+    }
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  registerActivity() {
+    if (this.data.isRegistered) {
+      wx.showToast({ title: '您已报名', icon: 'none' })
+      return
+    }
+    
+    wx.showModal({
+      title: '确认报名',
+      content: `确定要报名参加「${this.data.activity.title}」吗？`,
+      success: (res) => {
+        if (res.confirm) {
+          post(`/user/activity/register{activityId}/${this.data.activityId}`).then(() => {
+            this.setData({ isRegistered: true })
+            this.setData({ 'activity.currentParticipants': this.data.activity.currentParticipants + 1 })
+            wx.showToast({ title: '报名成功', icon: 'success' })
+          }).catch(() => {
+            wx.showToast({ title: '报名失败', icon: 'none' })
+          })
+        }
+      }
+    })
   }
 })
