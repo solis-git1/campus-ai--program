@@ -30,11 +30,17 @@ public class ClassroomController {
     @GetMapping("/empty")
     public R<List<Classroom>> listEmpty(
             @RequestParam(required = false) LocalDate date,
-            @RequestParam LocalTime startTime,
-            @RequestParam LocalTime endTime
+            @RequestParam(required = false) LocalTime startTime,
+            @RequestParam(required = false) LocalTime endTime
     ) {
         if (date == null) {
             date = LocalDate.now();
+        }
+        if (startTime == null) {
+            startTime = LocalTime.of(8, 0); // 默认8:00
+        }
+        if (endTime == null) {
+            endTime = LocalTime.of(22, 0); // 默认22:00
         }
         log.info("查询空教室，date:{}, startTime:{}, endTime:{}", date, startTime, endTime);
         List<Classroom> list = classroomService.listEmptyClassroomWithBehavior(date, startTime, endTime);
@@ -47,13 +53,22 @@ public class ClassroomController {
     @GetMapping("/empty/filter")
     public R<List<ClassroomVO>> listEmptyWithFilters(
             @RequestParam(required = false) LocalDate date,
-            @RequestParam LocalTime startTime,
-            @RequestParam LocalTime endTime,
+            @RequestParam(required = false) LocalTime startTime,
+            @RequestParam(required = false) LocalTime endTime,
             @RequestParam(required = false) Long buildingId,
             @RequestParam(required = false) Integer floor,
             @RequestParam(required = false) Integer minCapacity,
             @RequestParam(required = false) Integer hasMedia
     ) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        if (startTime == null) {
+            startTime = LocalTime.of(8, 0); // 默认8:00
+        }
+        if (endTime == null) {
+            endTime = LocalTime.of(22, 0); // 默认22:00
+        }
         log.info("多条件筛选空教室，date:{}, time:{}-{}, buildingId:{}, floor:{}, minCap:{}, media:{}",
                 date, startTime, endTime, buildingId, floor, minCapacity, hasMedia);
         List<ClassroomVO> list = classroomService.listEmptyWithFilters(

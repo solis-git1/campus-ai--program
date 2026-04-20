@@ -47,9 +47,19 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new BaseException(401, "请先登录");
         }
 
+        log.info("后端收到的token：{}", token);
         try {
             Claims claims = JwtUtil.parseToken(token);
-            Long userId = (Long) claims.get("userId");
+            Object userIdObj = claims.get("userId");
+            Long userId;
+            if (userIdObj instanceof Integer) {
+                userId = ((Integer) userIdObj).longValue();
+            } else if (userIdObj instanceof Long) {
+                userId = (Long) userIdObj;
+            } else {
+                log.warn("token中userId类型异常，value:{}", userIdObj);
+                throw new BaseException(401, "登录状态异常，请重新登录");
+            }
             BaseContext.setCurrentId(userId);
             return true;
         } catch (ExpiredJwtException e) {

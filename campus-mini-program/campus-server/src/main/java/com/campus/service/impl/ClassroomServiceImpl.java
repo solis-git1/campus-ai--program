@@ -44,7 +44,10 @@ public class ClassroomServiceImpl implements ClassroomService {
         if (endTime.equals(startTime)) {
             throw new BaseException(400, "结束时间不能等于开始时间");
         }
-        if (date != null && date.isBefore(LocalDate.now())) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        if (date.isBefore(LocalDate.now())) {
             throw new BaseException(400, "查询日期不能早于今天");
         }
 

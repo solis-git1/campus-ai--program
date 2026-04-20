@@ -2,7 +2,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/campus_mini?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/campus_ai_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 262191
   # 文件上传配置
@@ -41,19 +41,21 @@ server:
   servlet:
     context-path: /api
 
-
-
-  # 在application.yml中添加以下配置：
-
-  # JWT配置
+# JWT配置
 jwt:
-  secret: "3sK9$pR2!zQ7*bN5&dF8@gH1^jL6#kM0"  # 需要设置强密码
-  expiration: 86400000  # 24小时
+  secret: "aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890!@#$%^&*()_+-=[]{}|;:,.<>?`~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  expiration: 86400000
   issuer: "campus-mini-program"
-
-  # 跨域配置
+# 跨域配置
 cors:
-  allowed-origins: "https://servicewechat.com,http://localhost:8080"
+  allowed-origins: "https://servicewechat.com,http://localhost:3000"
   allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
   allowed-headers: "*"
   allow-credentials: true
+
+  # 跨域配置
+#cors:
+#  allowed-origins: "https://servicewechat.com,http://localhost:8080"
+#  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+#  allowed-headers: "*"
+#  allow-credentials: true

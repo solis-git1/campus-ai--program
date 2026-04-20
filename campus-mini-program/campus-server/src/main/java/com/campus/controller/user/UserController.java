@@ -39,7 +39,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public R<UserLoginVO> login(@RequestBody @Valid UserLoginDTO dto) {
-        log.info("用户微信登录：{}", dto);
+        log.info("用户微信登录");
         UserLoginVO vo = userService.wxLogin(dto);
         return R.success(vo);
     }
@@ -55,7 +55,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public R register(@RequestBody @Valid UserRegisterDTO dto) {
-        log.info("用户注册：{}", dto);
+        log.info("用户注册：username={}", dto.getUsername());
         userService.register(dto);
         return R.success();
     }

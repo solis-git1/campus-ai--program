@@ -6,6 +6,7 @@ import com.campus.dto.user.UserLoginDTO;
 import com.campus.dto.user.UserRegisterDTO;
 import com.campus.entity.User;
 import com.campus.entity.UserProfile;
+import com.campus.enumeration.RoleEnum;
 import com.campus.exception.BaseException;
 import com.campus.mapper.UserMapper;
 import com.campus.mapper.UserProfileMapper;
@@ -23,17 +24,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
- * 用户业务服务实现类
- * 
- * <p>该类实现了UserService接口，提供用户相关的核心业务逻辑实现，
- * 包括微信登录、用户注册、信息查询和更新等功能。</p>
- * 
- * @author campus
- * @since 1.0
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +36,14 @@ public class UserServiceImpl implements UserService {
     private final UserProfileMapper userProfileMapper;
     private final WxMaService wxMaService;
     private final WeChatProperties weChatProperties;
+
+    private static final Set<String> RESERVED_USERNAMES = Set.of(
+            "admin", "administrator", "root", "system", "superadmin",
+            "管理", "管理员", "超级管理员", "系统", "系统管理员"
+    );
+
+    private static final Pattern PASSWORD_COMPLEXITY_PATTERN =
+            Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d).+$");
 
     @Override
     public UserLoginVO wxLogin(UserLoginDTO dto) {
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService {
                 user.setUsername(openid);
                 user.setPassword(PasswordUtil.encode(Constant.DEFAULT_PASSWORD));
                 user.setNickname("微信用户");
+                user.setRole(RoleEnum.STUDENT.getCode());
                 user.setCreateTime(LocalDateTime.now());
                 userMapper.insert(user);
 
@@ -68,6 +70,10 @@ public class UserServiceImpl implements UserService {
                 profile.setUserId(user.getUserId());
                 profile.setUpdateTime(LocalDateTime.now());
                 userProfileMapper.insert(profile);
+            }
+
+            if (user.getStatus() != null && user.getStatus() == 1) {
+                throw new BaseException(403, "账号已被禁用，请联系管理员");
             }
 
             Map<String, Object> claims = new HashMap<>();
@@ -99,11 +105,25 @@ public class UserServiceImpl implements UserService {
         if (!Pattern.matches("^[a-zA-Z0-9_]+$", dto.getUsername())) {
             throw new BaseException(400, "用户名只能包含字母、数字和下划线");
         }
+        if (RESERVED_USERNAMES.contains(dto.getUsername().toLowerCase())) {
+            throw new BaseException(400, "该用户名为系统保留名称，不可注册");
+        }
+
         if (dto.getPassword() == null || dto.getPassword().isBlank()) {
             throw new BaseException(400, "密码不能为空");
         }
         if (dto.getPassword().length() < 6) {
             throw new BaseException(400, "密码长度不能少于6位");
+        }
+        if (dto.getPassword().length() > 32) {
+            throw new BaseException(400, "密码长度不能超过32位");
+        }
+        if (!PASSWORD_COMPLEXITY_PATTERN.matcher(dto.getPassword()).matches()) {
+            throw new BaseException(400, "密码必须同时包含字母和数字");
+        }
+
+        if (dto.getNickname() != null && dto.getNickname().length() > 30) {
+            throw new BaseException(400, "昵称长度不能超过30个字符");
         }
         if (dto.getPhone() != null && !dto.getPhone().isBlank()
                 && !Pattern.matches("^1[3-9]\\d{9}$", dto.getPhone())) {
@@ -112,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
         User exist = userMapper.getByUsername(dto.getUsername());
         if (exist != null) {
-            throw new BaseException(409, "用户名「" + dto.getUsername() + "」已被注册，请更换后重试");
+            throw new BaseException(409, "用户名已被注册，请更换后重试");
         }
 
         User user = new User();
@@ -120,6 +140,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(PasswordUtil.encode(dto.getPassword()));
         user.setNickname(dto.getNickname());
         user.setPhone(dto.getPhone());
+        user.setRole(RoleEnum.STUDENT.getCode());
         user.setCreateTime(LocalDateTime.now());
         userMapper.insert(user);
 
