@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/campus_ai_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: 262191
+    password: Wry051008
   # 文件上传配置
   servlet:
     multipart:
@@ -25,8 +25,8 @@ mybatis:
 
 # 微信小程序配置
 wechat:
-  appid: your_wechat_appid
-  secret: your_wechat_secret
+  appid: wx062a5521efac082c
+  secret: 33affea3c3b2e676848a1bffa369a5f5
 
 # 日志配置
 logging:

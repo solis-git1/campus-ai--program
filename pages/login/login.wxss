@@ -1,0 +1,100 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+.logo-emoji {
+  font-size: 160rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.wx-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+.logo-section {
+  text-align: center;
+  margin-bottom: 120rpx;
+}
+
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 40rpx;
+}
+
+.app-name {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  margin-bottom: 20rpx;
+}
+
+.slogan {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.login-section {
+  width: 100%;
+}
+
+.wechat-btn {
+  background-color: #07c160;
+  color: rgb(255, 255, 255);
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  font-size: 32rpx;
+  padding: 24rpx;
+  margin-bottom: 40rpx;
+}
+
+.wechat-btn.disabled {
+  opacity: 0.6;
+}
+
+.wechat-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.agreement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.checkbox {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid rgba(0, 0, 0, 0.7);
+  border-radius: 6rpx;
+  margin-right: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: rgb(0, 0, 0);
+}
+
+.checkbox.checked {
+  background-color: #07c160;
+  border-color: #07c160;
+}
+
+.link {
+  color: #ffd700;
+  margin: 0 4rpx;
+}

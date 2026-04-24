@@ -1,0 +1,92 @@
+.container {
+  padding: 20rpx;
+  padding-bottom: 60rpx;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  margin-bottom: 20rpx;
+}
+
+.required {
+  color: #ff5252;
+  font-size: 28rpx;
+}
+
+.optional {
+  color: #999;
+  font-size: 26rpx;
+  font-weight: normal;
+}
+
+.type-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.type-item {
+  padding: 16rpx 32rpx;
+  background-color: #f5f5f5;
+  border-radius: 48rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.type-item.active {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.content-textarea {
+  width: 100%;
+  min-height: 300rpx;
+  background-color: #f8f8f8;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.word-count {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.contact-input {
+  background-color: #f8f8f8;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.submit-btn {
+  background-color: #4CAF50;
+  color: #fff;
+  border-radius: 48rpx;
+  padding: 28rpx;
+  font-size: 32rpx;
+  margin-top: 20rpx;
+}
+
+.submit-btn[disabled] {
+  background-color: #ccc;
+  color: #fff;
+}
+
+.tips {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 30rpx;
+}

@@ -1,0 +1,78 @@
+<view class="container">
+  <!-- AI对话入口 -->
+  <view class="ai-section card" bindtap="goToChat">
+    <view class="flex-between">
+      <view>
+        <text class="ai-title">AI智能助手</text>
+        <text class="ai-desc">有问题？随时问我～</text>
+      </view>
+      <view class="ai-icon-emoji">🤖</view>
+    </view>
+    <view class="quick-questions">
+      <text class="question-tag">📚 高数怎么复习？</text>
+      <text class="question-tag">🏫 图书馆几点关门？</text>
+      <text class="question-tag">📝 如何选课？</text>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-entry">
+    <view class="entry-item" bindtap="goToTimetable">
+      <text class="entry-emoji">📅</text>
+      <text>课表</text>
+    </view>
+    <view class="entry-item" bindtap="goToClassroom">
+      <text class="entry-emoji">🏫</text>
+      <text>空教室</text>
+    </view>
+    <view class="entry-item" bindtap="goToActivity">
+      <text class="entry-emoji">🎉</text>
+      <text>活动</text>
+    </view>
+    <view class="entry-item" bindtap="goToTodo">
+      <text class="entry-emoji">✓</text>
+      <text>待办</text>
+    </view>
+  </view>
+
+  <!-- AI推荐 -->
+  <view class="recommend-section">
+    <view class="section-title flex-between">
+      <text>为你推荐</text>
+      <text class="more" bindtap="refreshRecommend">换一换 🔄</text>
+    </view>
+    
+    <block wx:for="{{recommendations}}" wx:key="recId">
+      <view class="recommend-card card" bindtap="handleRecommend" data-item="{{item}}">
+        <view class="recommend-title">{{item.title}}</view>
+        <view class="recommend-desc">{{item.content}}</view>
+        <view class="recommend-reason">推荐原因：{{item.reason}}</view>
+      </view>
+    </block>
+    
+    <view wx:if="{{recommendations.length === 0}}" class="empty-tip">
+      暂无推荐，快去使用更多功能吧～
+    </view>
+  </view>
+
+  <!-- 热门活动 -->
+  <view class="hot-activity">
+    <view class="section-title flex-between">
+      <text>热门活动</text>
+      <text class="more" bindtap="goToActivity">更多 &gt;</text>
+    </view>
+    
+    <scroll-view scroll-x class="activity-scroll">
+      <block wx:for="{{hotActivities}}" wx:key="activityId">
+        <view class="activity-card" bindtap="goToActivityDetail" data-id="{{item.activityId}}">
+          <view class="activity-cover-placeholder">📸</view>
+          <view class="activity-info">
+            <text class="activity-title">{{item.title}}</text>
+            <text class="activity-time">⏰ {{item.startTime}}</text>
+            <text class="activity-location">📍 {{item.location}}</text>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+</view>
