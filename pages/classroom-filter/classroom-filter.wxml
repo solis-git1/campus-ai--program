@@ -1,0 +1,60 @@
+<view class="container">
+  <view class="filter-form">
+    <view class="form-group">
+      <text>教学楼</text>
+      <picker mode="selector" range="{{buildings}}" bindchange="selectBuilding">
+        <view class="picker-value">{{selectedBuilding || '请选择'}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text>楼层</text>
+      <picker mode="selector" range="{{floors}}" bindchange="selectFloor">
+        <view class="picker-value">{{selectedFloor || '请选择'}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text>日期</text>
+      <picker mode="date" bindchange="selectDate">
+        <view class="picker-value">{{selectedDate || '请选择'}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text>开始时间</text>
+      <picker mode="time" bindchange="selectStartTime">
+        <view class="picker-value">{{startTime || '请选择'}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text>结束时间</text>
+      <picker mode="time" bindchange="selectEndTime">
+        <view class="picker-value">{{endTime || '请选择'}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text>最小容量</text>
+      <input type="number" placeholder="请输入" model:value="{{minCapacity}}"/>
+    </view>
+    
+    <view class="form-group">
+      <text>多媒体设备</text>
+      <switch checked="{{hasMedia}}" bindchange="toggleHasMedia"/>
+    </view>
+    
+    <button class="btn-search" bindtap="searchClassrooms">查询空教室</button>
+  </view>
+  
+  <view class="results" wx:if="{{classrooms.length > 0}}">
+    <view class="result-title">共找到 {{classrooms.length}} 间教室</view>
+    <block wx:for="{{classrooms}}" wx:key="classroomId">
+      <view class="result-card">
+        <text class="room-name">{{item.buildingName}} {{item.roomNumber}}</text>
+        <text class="room-info">容量{{item.capacity}}人 {{item.hasMedia ? '多媒体' : ''}}</text>
+      </view>
+    </block>
+  </view>
+</view>

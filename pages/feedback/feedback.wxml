@@ -1,0 +1,24 @@
+<view class="container">
+  <view class="feedback-type card">
+    <view class="section-title">反馈类型</view>
+    <view class="type-list">
+      <view class="type-item {{type === 'bug' ? 'active' : ''}}" bindtap="selectType" data-type="bug">🐛 功能异常</view>
+      <view class="type-item {{type === 'suggestion' ? 'active' : ''}}" bindtap="selectType" data-type="suggestion">💡 功能建议</view>
+      <view class="type-item {{type === 'other' ? 'active' : ''}}" bindtap="selectType" data-type="other">🤔 其他</view>
+    </view>
+  </view>
+
+  <view class="feedback-content card">
+    <view class="section-title">反馈内容 <text class="required">*</text></view>
+    <textarea class="content-textarea" placeholder="请详细描述您遇到的问题或建议，我们会认真对待每一条反馈～" maxlength="500" model:value="{{content}}"/>
+    <view class="word-count">{{content.length}}/500</view>
+  </view>
+
+  <view class="contact-info card">
+    <view class="section-title">联系方式 <text class="optional">（选填）</text></view>
+    <input class="contact-input" placeholder="填写手机号或微信号，方便我们联系您" model:value="{{contact}}"/>
+  </view>
+
+  <button class="submit-btn" bindtap="submitFeedback" disabled="{{!canSubmit}}">提交反馈</button>
+  <view class="tips"><text>我们会认真对待每一条反馈，感谢您的支持！</text></view>
+</view>

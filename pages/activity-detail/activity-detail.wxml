@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="activity-detail" wx:if="{{activity}}">
+    <view class="detail-cover-placeholder">📸 活动封面</view>
+    
+    <view class="detail-content">
+      <view class="title">{{activity.title}}</view>
+      
+      <view class="info-list">
+        <view class="info-item"><text class="label">⏰ 时间</text><text>{{activity.startTime}} - {{activity.endTime}}</text></view>
+        <view class="info-item"><text class="label">📍 地点</text><text>{{activity.location}}</text></view>
+        <view class="info-item"><text class="label">👥 主办方</text><text>{{activity.organizer}}</text></view>
+        <view class="info-item"><text class="label">📊 人数</text><text>{{activity.currentParticipants}}/{{activity.maxParticipants}}人</text></view>
+      </view>
+      
+      <view class="description">
+        <view class="section-title">活动简介</view>
+        <text>{{activity.description}}</text>
+      </view>
+    </view>
+    
+    <view class="action-buttons">
+      <button class="btn-favorite" bindtap="toggleFavorite">{{isFavorite ? '❤️ 已收藏' : '🤍 收藏活动'}}</button>
+      <button class="btn-register" bindtap="registerActivity" wx:if="{{activity.status === 'upcoming'}}">
+        {{isRegistered ? '✅ 已报名' : '📝 立即报名'}}
+      </button>
+      <button class="btn-disabled" wx:elif="{{activity.status === 'ongoing'}}">
+        活动进行中
+      </button>
+      <button class="btn-disabled" wx:else>
+        活动已结束
+      </button>
+    </view>
+  </view>
+</view>

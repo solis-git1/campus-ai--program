@@ -1,0 +1,111 @@
+<view class="timetable-container">
+  <!-- 顶部：周次和同步按钮 -->
+  <view class="header-bar">
+    <view class="week-control">
+      <view class="arrow-btn" bindtap="prevWeek">〈</view>
+      <text class="week-text">第{{currentWeek}}周</text>
+      <view class="arrow-btn" bindtap="nextWeek">〉</view>
+    </view>
+    <view class="sync-btn" bindtap="syncTimetable">🔄 同步</view>
+  </view>
+
+  <!-- 视图切换 -->
+  <view class="view-switch">
+    <view class="switch-item {{viewType === 'week' ? 'active' : ''}}" bindtap="switchView" data-type="week">
+      周视图
+    </view>
+    <view class="switch-item {{viewType === 'day' ? 'active' : ''}}" bindtap="switchView" data-type="day">
+      日视图
+    </view>
+  </view>
+
+  <!-- ========== 周视图（表格形式） ========== -->
+  <view wx:if="{{viewType === 'week'}}" class="week-view">
+    <!-- 表头：星期 -->
+    <view class="table-header">
+      <view class="time-col"></view>
+      <view class="day-col" wx:for="{{weekDays}}" wx:key="index">
+        <text class="day-name">{{item.day}}</text>
+        <text class="day-date">{{item.date}}</text>
+      </view>
+    </view>
+
+    <!-- 表格行：每个时间段一行 -->
+    <scroll-view scroll-y class="table-body" enhanced show-scrollbar="{{true}}">
+      <view class="table-row" wx:for="{{timeSlots}}" wx:for-item="slot" wx:key="index">
+        <!-- 时间列 -->
+        <view class="time-col">
+          <text class="time-text">{{slot.time}}</text>
+        </view>
+        
+        <!-- 7天各列 -->
+        <view class="day-col" wx:for="{{weekDays}}" wx:for-item="day" wx:for-index="dayIndex" wx:key="dayIndex">
+          <view class="course-cell">
+            <!-- 查找该天该时间段的课程 -->
+            <block wx:for="{{weekMatrix[dayIndex]}}" wx:for-item="course" wx:key="courseId">
+              <view wx:if="{{course.startTime === slot.startTime}}" 
+                    class="course-card"
+                    bindtap="showCourseDetail" 
+                    data-course="{{course}}">
+                <text class="course-name">{{course.courseName}}</text>
+                <text class="course-location">{{course.classroomName}}</text>
+                <text class="course-teacher">{{course.teacher}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ========== 日视图 ========== -->
+  <view wx:if="{{viewType === 'day'}}" class="day-view">
+    <!-- 日期选择 -->
+    <view class="date-header">
+      <picker mode="date" value="{{selectedDate}}" bindchange="onDateChange">
+        <view class="date-picker">
+          <text>{{selectedDate}} {{weekdayName}}</text>
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 时间段列表 -->
+    <scroll-view scroll-y class="day-schedule">
+      <view class="schedule-row" wx:for="{{timeSlots}}" wx:for-item="slot" wx:key="index">
+        <view class="time-col">{{slot.time}}</view>
+        <view class="course-info">
+          <block wx:for="{{dayCourses}}" wx:for-item="course" wx:key="courseId">
+            <view wx:if="{{course.startTime === slot.startTime}}" 
+                  class="course-card"
+                  bindtap="showCourseDetail" 
+                  data-course="{{course}}">
+              <text class="course-name">{{course.courseName}}</text>
+              <text class="course-teacher">{{course.teacher}} · {{course.classroomName}}</text>
+            </view>
+          </block>
+          <view wx:if="{{!hasCourseInSlot(slot.startTime)}}" class="empty-slot">空闲</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 课程详情弹窗 -->
+  <view class="modal {{showModal ? 'show' : ''}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">{{selectedCourse.courseName}}</view>
+      <view class="modal-body">
+        <view class="info-row">👨‍🏫 教师：{{selectedCourse.teacher}}</view>
+        <view class="info-row">📍 教室：{{selectedCourse.classroomName}}</view>
+        <view class="info-row">⏰ 时间：{{selectedCourse.startTime}} - {{selectedCourse.endTime}}</view>
+        <view class="info-row">📖 类型：{{selectedCourse.type}}</view>
+        <view class="info-row">📝 备注：{{selectedCourse.note || '无'}}</view>
+      </view>
+      <view class="modal-footer">
+        <view class="btn-reminder" bindtap="setReminder" data-course="{{selectedCourse}}">⏰ 设置提醒</view>
+        <view class="btn-delete" bindtap="removeCourse">🗑️ 删除课程</view>
+        <view class="btn-close" bindtap="hideModal">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>
