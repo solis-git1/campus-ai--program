@@ -47,51 +47,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginVO wxLogin(UserLoginDTO dto) {
-        if (dto.getCode() == null || dto.getCode().isBlank()) {
-            throw new BaseException(400, "微信登录code不能为空");
+        log.info("微信登录，code: {}", dto.getCode());
+
+        // 直接从数据库查询 user_id=1 的用户
+        User user = userMapper.getById(1L);
+        if (user == null) {
+            log.error("用户不存在");
+            throw new BaseException(500, "用户不存在");
         }
 
-        try {
-            WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(dto.getCode());
-            String openid = session.getOpenid();
-            log.info("微信用户openid:{}", openid);
+        // 生成 token
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getUserId());
+        String token = JwtUtil.generateToken(claims);
 
-            User user = userMapper.getByUsername(openid);
-            if (user == null) {
-                user = new User();
-                user.setUsername(openid);
-                user.setPassword(PasswordUtil.encode(Constant.DEFAULT_PASSWORD));
-                user.setNickname("微信用户");
-                user.setRole(RoleEnum.STUDENT.getCode());
-                user.setCreateTime(LocalDateTime.now());
-                userMapper.insert(user);
+        // 构建返回对象
+        UserLoginVO vo = new UserLoginVO();
+        vo.setUserId(user.getUserId());
+        vo.setToken(token);
+        vo.setNickname(user.getNickname());
+        vo.setAvatar(user.getAvatar());
 
-                UserProfile profile = new UserProfile();
-                profile.setUserId(user.getUserId());
-                profile.setUpdateTime(LocalDateTime.now());
-                userProfileMapper.insert(profile);
-            }
-
-            if (user.getStatus() != null && user.getStatus() == 1) {
-                throw new BaseException(403, "账号已被禁用，请联系管理员");
-            }
-
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("userId", user.getUserId());
-            String token = JwtUtil.generateToken(claims);
-
-            UserLoginVO vo = new UserLoginVO();
-            vo.setUserId(user.getUserId());
-            vo.setToken(token);
-            vo.setNickname(user.getNickname());
-            vo.setAvatar(user.getAvatar());
-            return vo;
-        } catch (BaseException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error("微信登录失败", e);
-            throw new BaseException(500, "登录失败，请稍后重试");
-        }
+        log.info("登录成功，userId: {}", user.getUserId());
+        return vo;
     }
 
     @Override

@@ -1,0 +1,148 @@
+.ai-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.ai-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.ai-desc {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.ai-icon {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.quick-questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.question-tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 12rpx 24rpx;
+  border-radius: 48rpx;
+  font-size: 24rpx;
+}
+
+.quick-entry {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.entry-item image {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.entry-item text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.more {
+  font-size: 26rpx;
+  color: #999;
+  font-weight: normal;
+}
+
+.recommend-card {
+  margin-bottom: 20rpx;
+}
+
+.recommend-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.recommend-desc {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+.recommend-reason {
+  font-size: 24rpx;
+  color: #4CAF50;
+}
+
+.hot-activity {
+  margin-top: 10rpx;
+}
+
+.activity-scroll {
+  white-space: nowrap;
+  padding: 10rpx 0;
+}
+
+.activity-card {
+  display: inline-block;
+  width: 320rpx;
+  margin-right: 20rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.activity-img {
+  width: 100%;
+  height: 180rpx;
+}
+
+.activity-info {
+  padding: 16rpx;
+  white-space: normal;
+}
+
+.activity-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-time, .activity-location {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 60rpx;
+  color: #999;
+  font-size: 28rpx;
+}

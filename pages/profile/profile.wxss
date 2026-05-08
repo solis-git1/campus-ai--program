@@ -1,0 +1,108 @@
+.user-info {
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  color: #fff;
+}
+
+.user-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.avatar-placeholder {
+  width: 100rpx;
+  height: 100rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60rpx;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.user-id {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.edit-icon {
+  font-size: 40rpx;
+}
+
+.stats-card {
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-around;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.menu-list {
+  background-color: #fff;
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  font-size: 30rpx;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.menu-icon {
+  font-size: 36rpx;
+}
+
+.arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+.logout-btn {
+  background-color: #ff5252;
+  color: #fff;
+  border-radius: 48rpx;
+  margin-top: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.version {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  padding: 20rpx;
+}

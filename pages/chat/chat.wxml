@@ -1,0 +1,43 @@
+<view class="chat-container">
+  <scroll-view scroll-y class="chat-history" scroll-into-view="{{scrollToView}}" scroll-top="{{scrollTop}}">
+    <block wx:for="{{messages}}" wx:key="index">
+      <view class="message {{item.role === 'user' ? 'user' : 'assistant'}}" id="msg-{{index}}">
+        <view class="message-avatar">
+          <view class="avatar-emoji">{{item.role === 'assistant' ? '🤖' : '👤'}}</view>
+        </view>
+        <view class="message-bubble">
+          <view class="message-content">{{item.content}}</view>
+          <view class="message-source" wx:if="{{item.source}}">
+            <text>来源：{{item.source}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+    <view class="loading-message" wx:if="{{isLoading}}">
+      <view class="message assistant">
+        <view class="message-avatar"><view class="avatar-emoji">🤖</view></view>
+        <view class="message-bubble">
+          <view class="typing-indicator"><span></span><span></span><span></span></view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="suggestions" wx:if="{{messages.length === 0}}">
+    <text class="suggestion-title">💡 你可以这样问：</text>
+    <view class="suggestion-list">
+      <view class="suggestion-item" bindtap="sendSuggestion" data-question="高数怎么复习？">📚 高数怎么复习？</view>
+      <view class="suggestion-item" bindtap="sendSuggestion" data-question="图书馆几点关门？">🏫 图书馆几点关门？</view>
+      <view class="suggestion-item" bindtap="sendSuggestion" data-question="如何选课？">📝 如何选课？</view>
+      <view class="suggestion-item" bindtap="sendSuggestion" data-question="这周末有什么活动？">🎉 这周末有什么活动？</view>
+    </view>
+  </view>
+
+  <view class="input-area">
+    <view class="input-wrapper">
+      <input class="message-input" placeholder="输入你的问题..." model:value="{{inputText}}" confirm-type="send" bindconfirm="sendMessage"/>
+      <button class="send-btn" bindtap="sendMessage">发送</button>
+    </view>
+  </view>
+</view>

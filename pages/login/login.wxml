@@ -1,0 +1,30 @@
+<view class="container">
+  <view class="logo-section">
+    <!--<image class="logo" src="/images/logo.png" mode="aspectFit"></image>-->
+    <text class="app-name">校园助手</text>
+    <text class="slogan">你的校园生活好帮手</text>
+  </view>
+
+  <view class="login-section">
+    <button 
+      class="wechat-btn {{agreed ? '' : 'disabled'}}"
+      bindtap="handleWechatLogin"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+    >
+      <!--<image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>-->
+      <text class="wx-icon">💬</text>
+      微信一键登录
+    </button>
+
+    <view class="agreement">
+      <view class="checkbox {{agreed ? 'checked' : ''}}" bindtap="toggleAgreement">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <text class="agreement-text">我已阅读并同意</text>
+      <text class="link" bindtap="viewUserAgreement">《用户协议》</text>
+      <text class="agreement-text">和</text>
+      <text class="link" bindtap="viewPrivacyPolicy">《隐私政策》</text>
+    </view>
+  </view>
+</view>

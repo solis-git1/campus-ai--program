@@ -1,0 +1,97 @@
+<view class="container">
+  <view class="todo-header flex-between">
+    <button class="add-btn" bindtap="showAddModal">+ 新增待办</button>
+    <picker mode="selector" range="{{['全部', '待完成', '已完成']}}" bindchange="filterByStatus">
+      <view class="filter-btn">{{statusFilter === 'pending' ? '待完成' : statusFilter === 'completed' ? '已完成' : '全部状态'}} ▼</view>
+    </picker>
+  </view>
+
+  <view class="category-tabs">
+    <view class="cate-item {{category === '' ? 'active' : ''}}" bindtap="filterByCategory" data-cate="">全部</view>
+    <view class="cate-item {{category === '学习' ? 'active' : ''}}" bindtap="filterByCategory" data-cate="学习">📚 学习</view>
+    <view class="cate-item {{category === '生活' ? 'active' : ''}}" bindtap="filterByCategory" data-cate="生活">🏠 生活</view>
+    <view class="cate-item {{category === '工作' ? 'active' : ''}}" bindtap="filterByCategory" data-cate="工作">💼 工作</view>
+  </view>
+
+  <scroll-view scroll-y class="todo-list" style="height: 800rpx;">
+    <block wx:for="{{todos}}" wx:key="taskId">
+      <view class="todo-card">
+        <!-- ✅ 修改点1：bindtap 改为 finishTodo -->
+        <view class="todo-checkbox" bindtap="finishTodo" data-id="{{item.taskId}}" data-status="{{item.status}}">
+          <view class="checkbox {{item.status === '已完成' ? 'checked' : ''}}">{{item.status === '已完成' ? '✓' : ''}}</view>
+        </view>
+        <view class="todo-content">
+          <view class="todo-title">{{item.title}}</view>
+          <view class="todo-info">
+            <text class="deadline">⏰ {{item.deadline || '无截止时间'}}</text>
+            <text class="priority {{item.priority}}">{{item.priority === 'high' ? '高' : item.priority === 'medium' ? '中' : '低'}}</text>
+          </view>
+        </view>
+        <view class="todo-actions">
+          <!-- ✅ 修改点2：edit 传整个 todo 对象 -->
+          <text class="edit" bindtap="editTodo" data-todo="{{item}}">✏️</text>
+          <!-- ✅ 修改点3：delete 传 id -->
+          <text class="delete" bindtap="deleteTodo" data-id="{{item.taskId}}">🗑️</text>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{todos.length === 0}}" class="empty-tip">🎉 暂无待办事项</view>
+  </scroll-view>
+
+  <view class="archived-section" wx:if="{{archivedTodos.length > 0}}">
+    <view class="archived-header flex-between" bindtap="toggleArchived">
+      <text>已完成 ({{archivedTodos.length}})</text>
+      <text>{{showArchived ? '▼' : '▶'}}</text>
+    </view>
+    <view class="archived-list" wx:if="{{showArchived}}">
+      <block wx:for="{{archivedTodos}}" wx:key="taskId">
+        <view class="archived-card">
+          <text>{{item.title}}</text>
+          <!-- ✅ 修改点4：restore 传 id -->
+          <text class="restore" bindtap="restoreTodo" data-id="{{item.taskId}}">恢复</text>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+
+<!-- 新增/编辑弹窗 -->
+<view class="modal {{showModal ? 'show' : ''}}" bindtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header flex-between">
+      <text>{{editMode ? '编辑待办' : '新增待办'}}</text>
+      <text class="close" bindtap="hideModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <input class="modal-input" placeholder="标题" value="{{form.title}}" bindinput="onTitleInput"/>
+      <textarea class="modal-textarea" placeholder="详细描述" value="{{form.description}}" bindinput="onDescInput"></textarea>
+      <view class="form-row">
+        <text>截止时间</text>
+        <picker mode="date" bindchange="setDeadlineDate">
+          <view>{{form.deadlineDate || '选择日期'}}</view>
+        </picker>
+        <picker mode="time" bindchange="setDeadlineTime">
+          <view>{{form.deadlineTime || '选择时间'}}</view>
+        </picker>
+      </view>
+      <view class="form-row">
+        <text>优先级</text>
+        <view class="priority-select">
+          <view class="prio {{form.priority === 'high' ? 'high' : ''}}" bindtap="setPriority" data-prio="high">高</view>
+          <view class="prio {{form.priority === 'medium' ? 'medium' : ''}}" bindtap="setPriority" data-prio="medium">中</view>
+          <view class="prio {{form.priority === 'low' ? 'low' : ''}}" bindtap="setPriority" data-prio="low">低</view>
+        </view>
+      </view>
+      <view class="form-row">
+        <text>分类</text>
+        <picker mode="selector" range="{{['学习', '生活', '工作']}}" bindchange="setCategory">
+          <view>{{form.category || '选择分类'}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn-cancel" bindtap="hideModal">取消</button>
+      <button class="btn-save" bindtap="saveTodo">保存</button>
+    </view>
+  </view>
+</view>
