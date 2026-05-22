@@ -1,75 +1,144 @@
+<!-- pages/discover/discover.wxml -->
 <view class="container">
-  <!-- 顶部Tab -->
-  <view class="discover-tabs">
-    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">🏫 空教室查询</view>
-    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">🎉 校园活动</view>
+  <!-- Tab切换 -->
+  <view class="tabs">
+    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">空教室查询</view>
+    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">校园活动</view>
   </view>
 
   <!-- 空教室查询模块 -->
-  <view class="classroom-module" wx:if="{{currentTab === 0}}">
-    <view class="filter-bar">
-      <view class="filter-item" bindtap="showBuildingPicker">
-        <text>{{selectedBuilding || '全部教学楼'}}</text>
-        <text class="arrow">▼</text>
+  <block wx:if="{{currentTab === 0}}">
+    <!-- 筛选行 -->
+    <view class="filter-row">
+      <view class="filter-chip" bindtap="showBuildingPicker">{{selectedBuildingName}}</view>
+      <view class="filter-chip" bindtap="showFloorPicker">{{selectedFloorText}}</view>
+      <view class="filter-chip advanced" bindtap="showAdvancedFilter">高级筛选</view>
+    </view>
+
+    <!-- 高级筛选面板 -->
+    <view class="advanced-panel" wx:if="{{showAdvanced}}">
+      <view class="advanced-row">
+        <text class="advanced-label">教室类型：</text>
+        <view class="advanced-options">
+          <view class="advanced-option {{classroomType === 'normal' ? 'active' : ''}}" bindtap="selectClassroomType" data-type="normal">普通教室</view>
+          <view class="advanced-option {{classroomType === 'seminar' ? 'active' : ''}}" bindtap="selectClassroomType" data-type="seminar">研讨室</view>
+        </view>
       </view>
-      <view class="filter-item" bindtap="showDatePicker">
-        <text>{{selectedDate || '选择日期'}}</text>
-        <text class="arrow">▼</text>
+      <view class="advanced-row">
+        <text class="advanced-label">座位数：</text>
+        <view class="advanced-options">
+          <view class="advanced-option {{seatCapacity === '' ? 'active' : ''}}" bindtap="selectSeatCapacity" data-capacity="">不限</view>
+          <view class="advanced-option {{seatCapacity === 'small' ? 'active' : ''}}" bindtap="selectSeatCapacity" data-capacity="small">≤50人</view>
+          <view class="advanced-option {{seatCapacity === 'medium' ? 'active' : ''}}" bindtap="selectSeatCapacity" data-capacity="medium">50-100人</view>
+          <view class="advanced-option {{seatCapacity === 'large' ? 'active' : ''}}" bindtap="selectSeatCapacity" data-capacity="large">≥100人</view>
+        </view>
       </view>
-      <view class="filter-item" bindtap="showTimePicker">
-        <text>{{selectedTime || '选择时段'}}</text>
-        <text class="arrow">▼</text>
+      <view class="advanced-buttons">
+        <button class="reset-btn" bindtap="resetClassroomFilters">重置</button>
+        <button class="confirm-btn" bindtap="applyAdvancedFilter">确定</button>
       </view>
     </view>
 
-    <scroll-view scroll-y class="classroom-list" style="height: 1000rpx;">
-      <block wx:for="{{emptyClassrooms}}" wx:key="classroomId">
-        <view class="classroom-card">
-          <view class="classroom-header flex-between">
-            <text class="classroom-name">{{item.buildingName}} {{item.roomNumber}}</text>
-            <text class="favorite" bindtap="toggleFavorite" data-id="{{item.classroomId}}">{{item.isFavorite ? '❤️' : '🤍'}}</text>
-          </view>
+    <!-- 滑动日期选择器 -->
+    <view class="date-scroll">
+      <scroll-view scroll-x class="date-list" scroll-with-animation show-scrollbar="{{false}}">
+        <view class="date-item {{item.isSelected ? 'active' : ''}}" wx:for="{{dateList}}" wx:key="index" bindtap="selectDate" data-date="{{item.date}}" data-index="{{index}}">
+          <text class="date-weekday">{{item.weekday}}</text>
+          <text class="date-day">{{item.day}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 时间段选择 -->
+    <view class="time-row">
+      <view class="time-chip {{selectedTimeText === '全天' ? 'active' : ''}}" bindtap="showTimePicker" data-time="全天">全天</view>
+      <view class="time-chip {{selectedTimeText === '1-2节' ? 'active' : ''}}" bindtap="showTimePicker" data-time="1-2节">1-2节</view>
+      <view class="time-chip {{selectedTimeText === '3-4节' ? 'active' : ''}}" bindtap="showTimePicker" data-time="3-4节">3-4节</view>
+      <view class="time-chip {{selectedTimeText === '5-6节' ? 'active' : ''}}" bindtap="showTimePicker" data-time="5-6节">5-6节</view>
+      <view class="time-chip {{selectedTimeText === '7-8节' ? 'active' : ''}}" bindtap="showTimePicker" data-time="7-8节">7-8节</view>
+      <view class="time-chip {{selectedTimeText === '9-10节' ? 'active' : ''}}" bindtap="showTimePicker" data-time="9-10节">9-10节</view>
+    </view>
+
+    <!-- 教室网格列表 -->
+    <scroll-view scroll-y class="classroom-list" wx:if="{{emptyClassrooms.length > 0}}">
+      <view class="classroom-grid">
+        <view class="classroom-card" wx:for="{{emptyClassrooms}}" wx:key="id">
+          <view class="classroom-number">{{item.roomNumber || item.name}}</view>
           <view class="classroom-info">
-            <text>📍 {{item.floor}}楼</text>
-            <text>👥 容量{{item.capacity}}人</text>
-            <text wx:if="{{item.hasMedia}}">📺 多媒体</text>
+            <text>{{item.capacity}}人</text>
+            <text>{{item.floor}}层</text>
           </view>
-          <button class="btn-add-todo" bindtap="addToTodo" data-room="{{item}}">➕ 添加到待办</button>
+          <view class="classroom-status status-free">空闲</view>
         </view>
-      </block>
-      <view wx:if="{{emptyClassrooms.length === 0}}" class="empty-tip">暂无空闲教室</view>
+      </view>
     </scroll-view>
-  </view>
 
-  <!-- 校园活动模块 -->
-  <view class="activity-module" wx:if="{{currentTab === 1}}">
-    <view class="activity-search">
-      <input class="search-input" placeholder="搜索活动名称" bindconfirm="searchActivity" model:value="{{keyword}}"/>
-      <view class="filter-icon" bindtap="showActivityFilter">🔍</view>
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{emptyClassrooms.length === 0 && !loading}}">
+      <text>📚 暂无空教室</text>
+      <text class="tip">试试其他日期或教学楼</text>
     </view>
 
-    <scroll-view scroll-x class="type-tabs">
-      <view class="type-item {{activityType === '' ? 'active' : ''}}" bindtap="filterByType" data-type="">全部</view>
-      <view class="type-item {{activityType === '讲座' ? 'active' : ''}}" bindtap="filterByType" data-type="讲座">讲座</view>
-      <view class="type-item {{activityType === '比赛' ? 'active' : ''}}" bindtap="filterByType" data-type="比赛">比赛</view>
-      <view class="type-item {{activityType === '社团活动' ? 'active' : ''}}" bindtap="filterByType" data-type="社团活动">社团</view>
-    </scroll-view>
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>查询中...</text>
+    </view>
 
-    <scroll-view scroll-y class="activity-list" style="height: 900rpx;">
-      <block wx:for="{{activities}}" wx:key="activityId">
-        <view class="activity-card" bindtap="goToActivityDetail" data-id="{{item.activityId}}">
-          <view class="activity-cover-placeholder">📸</view>
-          <view class="activity-content">
-            <view class="activity-title">{{item.title}}</view>
-            <view class="activity-time">⏰ {{item.startTime}}</view>
-            <view class="activity-location">📍 {{item.location}}</view>
-            <view class="activity-status">
-              <text class="status {{item.status}}">{{item.status === 'upcoming' ? '报名中' : item.status === 'ongoing' ? '进行中' : '已结束'}}</text>
-            </view>
+    <!-- 底部提示 -->
+    <view class="footer-tip">
+      <text>支持左右滑动切换日期</text>
+      <text>基于全校课表编排，无法显示借用和考试的教室</text>
+      <text>数据仅供参考，以实际使用情况为准</text>
+    </view>
+  </block>
+
+  <!-- 校园活动模块（列表页只显示基本信息，无报名/收藏按钮） -->
+  <block wx:if="{{currentTab === 1}}">
+    <view class="activity-filter">
+      <input class="search-input" placeholder="搜索活动" bindinput="searchActivity" confirm-type="search"/>
+      
+      <scroll-view scroll-x class="type-tabs">
+        <view class="type-tab {{activityType === '' ? 'active' : ''}}" bindtap="filterByType" data-type="">全部</view>
+        <view class="type-tab {{activityType === 'club' ? 'active' : ''}}" bindtap="filterByType" data-type="club">社团活动</view>
+        <view class="type-tab {{activityType === 'volunteer' ? 'active' : ''}}" bindtap="filterByType" data-type="volunteer">志愿活动</view>
+        <view class="type-tab {{activityType === 'lecture' ? 'active' : ''}}" bindtap="filterByType" data-type="lecture">讲座</view>
+        <view class="type-tab {{activityType === 'sports' ? 'active' : ''}}" bindtap="filterByType" data-type="sports">体育赛事</view>
+      </scroll-view>
+      
+      <view class="time-filter">
+        <picker mode="date" start="2024-01-01" end="2030-12-31" bindchange="filterByDate">
+          <view class="picker-btn">📅 {{selectedActivityDate || '全部时间'}}</view>
+        </picker>
+        <picker mode="selector" range="{{statusList}}" bindchange="filterByStatus">
+          <view class="picker-btn">📊 {{activityStatus || '全部状态'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 活动列表（只显示基本信息，点击跳转详情） -->
+    <scroll-view scroll-y class="activity-list" bindscrolltolower="loadMore" wx:if="{{activities.length > 0}}">
+      <view class="activity-item" wx:for="{{activities}}" wx:key="activityId" bindtap="goToActivityDetail" data-id="{{item.activityId}}">
+        <view class="activity-header">
+          <text class="activity-title">{{item.title}}</text>
+          <view class="activity-tags">
+            <text class="activity-type">{{item.typeName || item.type}}</text>
+            <text class="activity-status {{item.statusClass}}">{{item.statusText}}</text>
           </view>
         </view>
-      </block>
-      <view wx:if="{{activities.length === 0}}" class="empty-tip">暂无活动</view>
+        <view class="activity-info">
+          <text>📍 {{item.location || '待定'}}</text>
+          <text>⏰ {{item.startTime}} - {{item.endTime}}</text>
+        </view>
+        <view class="activity-stats">
+          <text>👥 {{item.currentParticipants || 0}}/{{item.maxParticipants || '不限'}}</text>
+        </view>
+      </view>
+      <view class="load-more" wx:if="{{hasMore}}"><text>加载更多...</text></view>
     </scroll-view>
-  </view>
+
+    <view class="empty-state" wx:if="{{activities.length === 0 && !loading}}">
+      <text>🎯 暂无活动</text>
+      <text class="tip">换个筛选条件试试</text>
+    </view>
+  </block>
 </view>

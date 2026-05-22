@@ -7,7 +7,16 @@
   justify-content: center;
   padding: 40rpx;
 }
+.logo-emoji {
+  font-size: 160rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
 
+.wx-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
 .logo-section {
   text-align: center;
   margin-bottom: 120rpx;

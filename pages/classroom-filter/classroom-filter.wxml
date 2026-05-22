@@ -1,60 +1,86 @@
 <view class="container">
-  <view class="filter-form">
-    <view class="form-group">
-      <text>教学楼</text>
-      <picker mode="selector" range="{{buildings}}" bindchange="selectBuilding">
-        <view class="picker-value">{{selectedBuilding || '请选择'}}</view>
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <view class="filter-title">筛选条件</view>
+    
+    <!-- 建筑选择 -->
+    <view class="filter-item">
+      <view class="filter-label">教学楼</view>
+      <picker range="{{buildings}}" range-key="name" bindchange="selectBuilding">
+        <view class="filter-value">{{selectedBuildingName || '请选择教学楼'}}</view>
       </picker>
     </view>
     
-    <view class="form-group">
-      <text>楼层</text>
-      <picker mode="selector" range="{{floors}}" bindchange="selectFloor">
-        <view class="picker-value">{{selectedFloor || '请选择'}}</view>
+    <!-- 楼层选择 -->
+    <view class="filter-item">
+      <view class="filter-label">楼层</view>
+      <picker range="{{floors}}" bindchange="selectFloor">
+        <view class="filter-value">{{selectedFloor || '请选择楼层'}}</view>
       </picker>
     </view>
     
-    <view class="form-group">
-      <text>日期</text>
-      <picker mode="date" bindchange="selectDate">
-        <view class="picker-value">{{selectedDate || '请选择'}}</view>
+    <!-- 日期选择 -->
+    <view class="filter-item">
+      <view class="filter-label">选择日期</view>
+      <picker mode="date" value="{{selectedDate}}" bindchange="selectDate" start="2024-01-01" end="2030-12-31">
+        <view class="filter-value date-value">{{selectedDate}}</view>
       </picker>
     </view>
     
-    <view class="form-group">
-      <text>开始时间</text>
+    <!-- 开始时间 -->
+    <view class="filter-item">
+      <view class="filter-label">开始时间</view>
       <picker mode="time" bindchange="selectStartTime">
-        <view class="picker-value">{{startTime || '请选择'}}</view>
+        <view class="filter-value">{{startTime || '请选择开始时间'}}</view>
       </picker>
     </view>
     
-    <view class="form-group">
-      <text>结束时间</text>
+    <!-- 结束时间 -->
+    <view class="filter-item">
+      <view class="filter-label">结束时间</view>
       <picker mode="time" bindchange="selectEndTime">
-        <view class="picker-value">{{endTime || '请选择'}}</view>
+        <view class="filter-value">{{endTime || '请选择结束时间'}}</view>
       </picker>
     </view>
     
-    <view class="form-group">
-      <text>最小容量</text>
-      <input type="number" placeholder="请输入" model:value="{{minCapacity}}"/>
+    <!-- 最小容量 -->
+    <view class="filter-item">
+      <view class="filter-label">最小容量</view>
+      <input class="filter-input" type="number" placeholder="请输入最小容量" value="{{minCapacity}}" bindinput="onMinCapacityInput" />
     </view>
     
-    <view class="form-group">
-      <text>多媒体设备</text>
-      <switch checked="{{hasMedia}}" bindchange="toggleHasMedia"/>
+    <!-- 多媒体设备 -->
+    <view class="filter-item">
+      <view class="filter-label">多媒体设备</view>
+      <switch checked="{{hasMedia}}" bindchange="toggleHasMedia" />
     </view>
     
-    <button class="btn-search" bindtap="searchClassrooms">查询空教室</button>
+    <!-- 查询按钮 -->
+    <button class="search-btn" bindtap="searchClassrooms">查询空教室</button>
   </view>
   
-  <view class="results" wx:if="{{classrooms.length > 0}}">
-    <view class="result-title">共找到 {{classrooms.length}} 间教室</view>
-    <block wx:for="{{classrooms}}" wx:key="classroomId">
-      <view class="result-card">
-        <text class="room-name">{{item.buildingName}} {{item.roomNumber}}</text>
-        <text class="room-info">容量{{item.capacity}}人 {{item.hasMedia ? '多媒体' : ''}}</text>
+  <!-- 教室列表 -->
+  <view class="classroom-list">
+    <block wx:for="{{classrooms}}" wx:key="id">
+      <view class="classroom-item">
+        <view class="classroom-info">
+          <view class="classroom-name">{{item.buildingName}} {{item.roomNumber || item.name}}</view>
+          <view class="classroom-detail">
+            <text>{{item.type === 1 ? '普通教室' : '多媒体教室'}}</text>
+            <text>可容纳{{item.capacity}}人</text>
+            <text>{{item.floor}}层</text>
+          </view>
+        </view>
+        <view class="classroom-action">
+          <view wx:if="{{!item.isFavorited}}" class="favorite-btn" bindtap="favoriteClassroom" data-id="{{item.id}}">收藏</view>
+          <view wx:else class="favorited-btn" bindtap="unfavoriteClassroom" data-id="{{item.id}}">已收藏</view>
+        </view>
       </view>
     </block>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{classrooms.length === 0}}">
+      <text>暂无符合条件的教室</text>
+    </view>
   </view>
 </view>

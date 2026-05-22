@@ -1,6 +1,6 @@
 <view class="container">
   <view class="logo-section">
-    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <!--<image class="logo" src="/images/logo.png" mode="aspectFit"></image>-->
     <text class="app-name">校园助手</text>
     <text class="slogan">你的校园生活好帮手</text>
   </view>
@@ -12,7 +12,8 @@
       loading="{{loading}}"
       disabled="{{loading}}"
     >
-      <image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>
+      <!--<image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>-->
+      <text class="wx-icon">💬</text>
       微信一键登录
     </button>
 

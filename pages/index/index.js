@@ -7,6 +7,14 @@ Page({
   },
 
   onShow() {
+    const token = wx.getStorageSync('token')
+    console.log('index.js - token:', token)
+    
+    if (!token) {
+      console.error('没有 token，跳转登录')
+      wx.reLaunch({ url: '/pages/login/login' })
+      return
+    }
     this.loadRecommendations()
     this.loadHotActivities()
   },
